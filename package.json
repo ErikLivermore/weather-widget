@@ -1,0 +1,46 @@
+{
+	"name": "weather-widget",
+	"version": "1.0.0",
+	"description": "Small weather widget written in Node.js and React with server-side rendering",
+	"main": "index.js",
+	"scripts": {
+		"build:server": "webpack",
+		"build:client": "webpack --config webpack.client.config.js",
+		"build": "npm run build:server & npm run build:client",
+		"serve": "node dist/server.js",
+		"start": "npm run build && npm run serve",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ErikLivermore/weather-widget.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/ErikLivermore/weather-widget/issues"
+	},
+	"homepage": "https://github.com/ErikLivermore/weather-widget#readme",
+	"dependencies": {
+		"@babel/core": "^7.1.6",
+		"@babel/plugin-transform-async-to-generator": "^7.2.0",
+		"@babel/polyfill": "^7.2.5",
+		"@babel/preset-env": "^7.1.6",
+		"@babel/preset-react": "^7.0.0",
+		"babel-loader": "^8.0.4",
+		"babel-polyfill": "^6.26.0",
+		"ejs": "^2.6.1",
+		"express": "^4.16.4",
+		"node-fetch": "^2.3.0",
+		"react": "^16.7.0",
+		"react-dom": "^16.7.0",
+		"react-router": "^4.3.1",
+		"react-router-dom": "^4.3.1"
+	},
+	"devDependencies": {
+		"webpack": "^4.29.1",
+		"webpack-cli": "^3.2.1",
+		"webpack-node-externals": "^1.7.2"
+	}
+}
