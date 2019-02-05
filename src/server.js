@@ -2,30 +2,46 @@ import express from 'express';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
+import configureStore from './store';
+import appSaga from './saga';
+import { Provider } from 'react-redux';
 import App from './components/App';
-import fetch from 'node-fetch';
 
-const server = express();
-server.set('view engine', 'ejs');
-server.set('views', 'src');
-server.use('/static', express.static('public'));
+const app = express();
 
-async function getWeatherData(city) {
-	const weatherUrl = "http://api.openweathermap.org/data/2.5/weather?q=" + city + ",dk&appid=166d00e26d3ff2c6149e89feccc5c59a&units=metric";
-	const response = await fetch(weatherUrl);
-	return await response.json();
-}
+app.set('view engine', 'ejs');
+app.set('views', 'src');
+app.use('/static', express.static('public'));
 
-server.get('*', async (req, res) => {
-	const weather = await getWeatherData('Copenhagen');
+app.get('/', async (req, res) => {
 	const context = {};
-	res.render('layout', {
-		content: ReactDOMServer.renderToString(
+	const store = configureStore({});
+
+	// The following concept makes redux-saga work correctly with server-side rendering
+	// Taken from https://medium.com/@navgarcha7891/react-server-side-rendering-with-simple-redux-store-hydration-9f77ab66900a
+
+	const rootComponent = (
+		<Provider store={store}>
 			<StaticRouter location={req.url} context={context}>
 				<App />
 			</StaticRouter>
-		)
+		</Provider>
+	);
+
+	store.runSaga(appSaga).done.then(() => {
+		const state = store.getState();
+		res.render('layout', {
+			state: JSON.stringify(state),
+			content: ReactDOMServer.renderToString(
+				rootComponent
+			)
+		});
 	});
+
+	ReactDOMServer.renderToString(
+		rootComponent
+	);
+	store.close();
 });
 
-server.listen(3000, () => console.log("Listening on port 3000"));
+app.listen(3000, () => console.log('App listening at 3000'));

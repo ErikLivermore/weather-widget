@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default () => (
-  <div>Home</div>
+  <h2>404 Not Found</h2>
 );
